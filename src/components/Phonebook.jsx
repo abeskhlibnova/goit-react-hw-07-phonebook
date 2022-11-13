@@ -6,6 +6,7 @@ import Filter from './Filter';
 import { ContactsTitle, Form, ContactFilterForm } from './Phonebook.styled';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchContacts } from 'redux/contacts/contacts-operations';
+
 import { getLoading, getError } from 'redux/contacts/contacts-selectors';
 import Loader from './Loader/Loader';
 

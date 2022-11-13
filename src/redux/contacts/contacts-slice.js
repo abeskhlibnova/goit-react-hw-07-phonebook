@@ -15,9 +15,9 @@ const isPending = store => {
   store.isLoading = true;
 };
 
-const isRejected = (store, { payload }) => {
+const isRejected = (store, action) => {
   store.isLoading = false;
-  store.error = payload;
+  store.error = action.payload;
 };
 
 const contactsSlice = createSlice({
@@ -25,27 +25,28 @@ const contactsSlice = createSlice({
   initialState: initialState,
   extraReducers: {
     [fetchContacts.pending]: isPending,
-    [fetchContacts.fulfilled](store, { payload }) {
+    [fetchContacts.fulfilled](store, action) {
       store.isLoading = false;
       store.error = null;
-      store.items = payload;
+      store.items = action.payload;
     },
     [fetchContacts.rejected]: isRejected,
     [addContact.pending]: isPending,
-    [addContact.fulfilled](store, { payload }) {
+    [addContact.fulfilled](store, action) {
       store.isLoading = false;
       store.error = null;
-      store.items.push(payload);
+      store.items.push(action.payload);
     },
     [addContact.rejected]: isRejected,
     [deleteContact.pending]: isPending,
-    [deleteContact.fulfilled](store, { payload }) {
+    [deleteContact.fulfilled](store, action) {
       store.isLoading = false;
       store.error = null;
-      const index = store.contacts.findIndex(
-        contact => contact.id === payload.id
+
+      const index = store.items.findIndex(
+        contact => contact.id === action.payload.id
       );
-      store.contacts.splice(index, 1);
+      store.items.splice(index, 1);
     },
     [deleteContact.rejected]: isRejected,
   },
