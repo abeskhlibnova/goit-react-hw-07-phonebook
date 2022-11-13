@@ -13,7 +13,7 @@ export const PhonebookBox = styled.div`
 
 export const Form = styled.div`
   width: 100%;
-  max-width: 820px;
+  max-width: 1080px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import {
   InputWrapper,
@@ -10,33 +9,44 @@ import {
   PhonebookTitle,
   PhonebookContainer,
 } from './Phonebook.styled';
+import { useSelector, useDispatch } from 'react-redux';
+import { getContacts } from 'redux/contacts/contacts-selectors';
+import { toast } from 'react-toastify';
+// import { addContact } from 'redux/contacts/contacts-slice';
+import { addContact } from 'redux/contacts/contacts-operations';
 
-const initialState = {
-  name: '',
-  number: '',
-};
+export default function ContactForm() {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
-export default function ContactForm({ onSubmit }) {
-  const [state, setState] = useState(initialState);
+  const addPhoneContact = contact => {
+    if (isDuplicate(contact)) {
+      toast.warn(`${contact.name} is already in contacts`);
+      return;
+    }
+
+    toast('Contact added');
+    const action = addContact(contact);
+    dispatch(action);
+    setName('');
+    setNumber('');
+  };
+
+  const isDuplicate = ({ name }) => {
+    const result = contacts.find(
+      contact => contact.name.toLocaleLowerCase() === name.toLocaleLowerCase()
+    );
+    return result;
+  };
 
   const nameId = nanoid();
   const numberId = nanoid();
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setState(prev => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  };
-
   const handleSubmit = e => {
     e.preventDefault();
-    const { name, number } = state;
-    onSubmit({ name, number });
-    setState(initialState);
+    addPhoneContact({ name, number });
   };
 
   return (
@@ -52,8 +62,8 @@ export default function ContactForm({ onSubmit }) {
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
-            value={state.name}
-            onChange={handleChange}
+            value={name}
+            onChange={event => setName(event.target.value)}
           />
         </InputWrapper>
         <InputWrapper>
@@ -65,8 +75,8 @@ export default function ContactForm({ onSubmit }) {
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
-            value={state.number}
-            onChange={handleChange}
+            value={number}
+            onChange={event => setNumber(event.target.value)}
           />
         </InputWrapper>
         <AddContactButton type="submit">Add contact</AddContactButton>
@@ -74,7 +84,3 @@ export default function ContactForm({ onSubmit }) {
     </PhonebookContainer>
   );
 }
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};

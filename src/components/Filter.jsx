@@ -1,8 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { getFilter } from 'redux/filter/filter-selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFilter } from 'redux/filter/filter-slice';
 import { FilterTitle, FilterInput } from './Phonebook.styled';
 
-export default function Filter({ filter, handleChange }) {
+export default function Filter() {
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+
+  const handleChangeFilter = e => {
+    const { value } = e.target;
+    dispatch(setFilter(value));
+  };
+
   return (
     <div>
       <FilterTitle>Find contacts by name</FilterTitle>
@@ -10,14 +20,9 @@ export default function Filter({ filter, handleChange }) {
         type="text"
         name="filter"
         value={filter}
-        onChange={handleChange}
+        onChange={handleChangeFilter}
         placeholder="Enter a name to search..."
       ></FilterInput>
     </div>
   );
 }
-
-Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
-};
