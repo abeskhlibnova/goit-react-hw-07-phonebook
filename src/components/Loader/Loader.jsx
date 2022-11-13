@@ -11,7 +11,6 @@ export default function Loader() {
         radius="9"
         color="#1abc9c"
         ariaLabel="three-dots-loading"
-        radius="12.5"
         wrapperStyle={{}}
         wrapperClass=""
         visible={true}
